@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../domain/entities/category.dart';
 import '../../domain/repositories/category_repository.dart';
-import '../mappers/category_mapper.dart';
+import '../models/category_model.dart' as models;
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final FirebaseFirestore _firestore;
@@ -13,13 +13,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<List<Category>> getCategories() async {
     try {
       final snapshot = await _firestore.collection('categories').get();
-      final models = snapshot.docs
-          .map((doc) => CategoryModel.fromJson({
+      final categoryModels = snapshot.docs
+          .map((doc) => models.CategoryModel.fromJson({
             ...doc.data(),
             'id': doc.id,
           }))
           .toList();
-      return models.map((model) => model.toEntity()).toList();
+      return categoryModels.map((model) => model.toEntity()).toList();
     } catch (e) {
       throw Exception('Failed to load categories: \$e');
     }
@@ -29,10 +29,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Stream<List<Category>> getCategoriesStream() {
     try {
       return _firestore.collection('categories').snapshots().map((snapshot) {
-        final models = snapshot.docs
-            .map((doc) => CategoryModel.fromJson(doc.data()..['id'] = doc.id))
+        final categoryModels = snapshot.docs
+            .map((doc) => models.CategoryModel.fromJson({
+              ...doc.data(),
+              'id': doc.id,
+            }))
             .toList();
-        return models.map((model) => model.toEntity()).toList();
+        return categoryModels.map((model) => model.toEntity()).toList();
       });
     } catch (e) {
       throw Exception('Failed to load categories: \$e');
