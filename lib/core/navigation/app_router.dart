@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ai_vid_gen/views/onboarding/landing_screen.dart';
 import 'package:ai_vid_gen/views/onboarding/onboarding_screen.dart';
+import 'package:ai_vid_gen/views/paywall/paywall_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -19,7 +20,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/paywall',
       name: 'paywall',
-      builder: (context, state) => const Scaffold(body: Center(child: Text('Paywall Screen'))), // Placeholder for paywall screen
+      builder: (context, state) => const PaywallScreen(), // Paywall screen
     ),
   ],
 );
