@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ai_vid_gen/views/onboarding/landing_screen.dart';
 import 'package:ai_vid_gen/views/onboarding/onboarding_screen.dart';
 import 'package:ai_vid_gen/views/paywall/paywall_screen.dart';
+import 'package:ai_vid_gen/views/generation/generation_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -21,6 +22,11 @@ final GoRouter appRouter = GoRouter(
       path: '/paywall',
       name: 'paywall',
       builder: (context, state) => const PaywallScreen(), // Paywall screen
+    ),
+    GoRoute(
+      path: '/generation',
+      name: 'generation',
+      builder: (context, state) => const GenerationScreen(), // Generation screen
     ),
   ],
 );
