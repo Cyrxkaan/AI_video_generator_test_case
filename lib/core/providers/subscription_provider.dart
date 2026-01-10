@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:riverpod/riverpod.dart';
 
-// Abonelik türü enum'u
+// Subscription type enum
 enum SubscriptionType { monthly, yearly }
 
-// Seçilen abonelik türünü tutan provider
+// Provider to hold the selected subscription type
 final subscriptionTypeProvider = StateProvider<SubscriptionType>(
   (ref) => SubscriptionType.monthly,
   name: 'subscriptionTypeProvider',
 );
 
-// Abonelik bilgileri modeli
+// Subscription information model
 class SubscriptionPlan {
   final SubscriptionType type;
   final String title;
@@ -31,7 +31,7 @@ class SubscriptionPlan {
   });
 }
 
-// Abonelik planları
+// Subscription plans
 final subscriptionPlans = {
   SubscriptionType.monthly: const SubscriptionPlan(
     type: SubscriptionType.monthly,

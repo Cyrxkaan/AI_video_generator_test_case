@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ai_vid_gen/views/onboarding/landing_screen.dart';
-import 'package:ai_vid_gen/views/onboarding/onboarding_screen.dart';
-import 'package:ai_vid_gen/views/paywall/paywall_screen.dart';
-import 'package:ai_vid_gen/views/generation/generation_screen.dart';
-import 'package:ai_vid_gen/views/home/home_screen.dart';
-import 'package:ai_vid_gen/views/profile/profile_screen.dart';
+import 'package:ai_vid_gen/presentation/onboarding/landing_screen.dart';
+import 'package:ai_vid_gen/presentation/onboarding/onboarding_screen.dart';
+import 'package:ai_vid_gen/presentation/paywall/paywall_screen.dart';
+import 'package:ai_vid_gen/presentation/generation/generation_screen.dart';
+import 'package:ai_vid_gen/presentation/home/home_screen.dart';
+import 'package:ai_vid_gen/presentation/profile/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/', // Start with landing screen

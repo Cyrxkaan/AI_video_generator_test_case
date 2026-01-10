@@ -64,6 +64,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  flutter_native_splash: ^2.4.4
 
 dev_dependencies:
   flutter_test:
@@ -124,3 +125,52 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Native splash screen configuration
+flutter_native_splash:
+  # This package generates native code to customize Flutter's default white native splash screen
+  # with background color and splash image.
+  # Customize the parameters below, and run the following command in the terminal:
+  # flutter pub run flutter_native_splash:create
+  # To restore Flutter's default white splash screen, run the following command in the terminal:
+  # flutter pub run flutter_native_splash:remove
+
+  # Background color for the splash screen
+  color: "#000000"  # Black background to match your app theme
+  color_dark: "#000000"  # Dark mode background
+  
+  # Image to display on the splash screen
+  image: assets/images/AppIcon.png  # Your custom logo path
+  
+  # iOS specific settings
+  ios: true
+  android: true
+  
+  # Android specific settings
+  android_12:
+    # Android 12 handles the splash screen differently
+    color: "#000000"
+    color_dark: "#000000"
+    # Image for Android 12+ (if different)
+    image: assets/images/AppIcon.png
+    # Icon background can be different from the main background
+    icon_background_color: "#000000"
+    icon_background_color_dark: "#000000"
+  
+  # Web specific settings
+  web: true
+  
+  # Optional: branding image in bottom center (Android only)
+  # branding: assets/images/branding.png
+  # branding_mode: bottom
+  
+  # Optional: make the splash screen image always appear (even after app loads)
+  # This is only supported on Android
+  # always_create_splash: true
+  
+  # Optional: customize the splash screen for different platforms
+  # Android specific options
+  android_gravity: center  # center, fill, bottom, etc.
+  
+  # iOS specific options
+  ios_content_mode: center  # scaleToFill, aspectFit, center, etc.
