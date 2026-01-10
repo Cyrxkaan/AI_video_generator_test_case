@@ -12,8 +12,8 @@ class LandingScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.subtleGradient,
+        decoration: const BoxDecoration(
+          color: AppColors.background, // Black background
         ),
         child: SafeArea(
           child: Padding(
@@ -37,48 +37,69 @@ class LandingScreen extends StatelessWidget {
                       width: 2.w,
                     ),
                   ),
-                  child: Icon(
-                    Icons.movie_creation_outlined,
-                    color: AppColors.neonPurple,
-                    size: 60.sp,
+                  child: Center(
+                    child: Icon(
+                      Icons.movie_creation_outlined,
+                      color: AppColors.neonPurple,
+                      size: 60.sp,
+                    ),
                   ),
                 ),
                 SizedBox(height: 48.h),
-                Text(
-                  'AI Video Generator',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                ShaderMask(
+                  shaderCallback: (bounds) {
+                    return AppColors.vibrantGradient.createShader(
+                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                    );
+                  },
+                  child: Text(
+                    'AI Video Generator',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
                 ),
                 SizedBox(height: 16.h),
-                Text(
-                  'Create stunning videos with AI',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white70,
-                      ),
+                ShaderMask(
+                  shaderCallback: (bounds) {
+                    return AppColors.vibrantGradient.createShader(
+                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                    );
+                  },
+                  child: Text(
+                    'Create stunning videos with AI',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.white70,
+                        ),
+                  ),
                 ),
                 SizedBox(height: 64.h),
-                ElevatedButton(
-                  onPressed: () {
-                    context.push('/onboarding');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.neonPurple,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 40.w,
-                      vertical: 16.h,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
+                Container(
+                  height: 65,
+                  decoration: BoxDecoration(
+                    gradient: AppColors.vibrantGradient,
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Text(
-                    'Get Started',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.push('/onboarding');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    child: Text(
+                      'Get Started',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

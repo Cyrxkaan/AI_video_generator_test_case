@@ -5,9 +5,10 @@ import 'package:ai_vid_gen/views/onboarding/onboarding_screen.dart';
 import 'package:ai_vid_gen/views/paywall/paywall_screen.dart';
 import 'package:ai_vid_gen/views/generation/generation_screen.dart';
 import 'package:ai_vid_gen/views/home/home_screen.dart';
+import 'package:ai_vid_gen/views/profile/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/', // Start with landing screen
   routes: [
     GoRoute(
       path: '/',
@@ -33,6 +34,11 @@ final GoRouter appRouter = GoRouter(
       path: '/home',
       name: 'home',
       builder: (context, state) => const HomeScreen(), // Home screen
+    ),
+    GoRoute(
+      path: '/profile',
+      name: 'profile',
+      builder: (context, state) => const ProfileScreen(), // Profile screen
     ),
   ],
 );

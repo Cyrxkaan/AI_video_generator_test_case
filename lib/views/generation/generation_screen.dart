@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:ai_vid_gen/core/providers/generation_provider.dart';
 import 'package:ai_vid_gen/core/theme/theme.dart';
@@ -17,13 +18,9 @@ class GenerationScreen extends ConsumerWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.subtleGradient,
-        ),
+        decoration: const BoxDecoration(color: AppColors.background), // Black background
         child: SafeArea(
-          child: isLoading
-              ? _buildLoadingView()
-              : _buildMainView(context, ref),
+          child: isLoading ? _buildLoadingView() : _buildMainView(context, ref),
         ),
       ),
     );
@@ -39,7 +36,8 @@ class GenerationScreen extends ConsumerWidget {
             // Geri butonu
             IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                // Navigate back to home screen using go_router
+                context.go('/home');
               },
               icon: Icon(
                 Icons.arrow_back_ios_new,
@@ -47,34 +45,48 @@ class GenerationScreen extends ConsumerWidget {
                 size: 20.sp,
               ),
             ),
-            
+
             SizedBox(height: 16.h),
-            
+
             // Başlık
-            Text(
-              'Video Oluştur',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+            ShaderMask(
+              shaderCallback: (bounds) {
+                return AppColors.vibrantGradient.createShader(
+                  Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                );
+              },
+              child: Text(
+                'Video Oluştur',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            
+
             SizedBox(height: 8.h),
-            
-            Text(
-              'AI ile video üretmek için görsel yükleyin',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white70,
-                  ),
+
+            ShaderMask(
+              shaderCallback: (bounds) {
+                return AppColors.vibrantGradient.createShader(
+                  Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                );
+              },
+              child: Text(
+                'AI ile video üretmek için görsel yükleyin',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
+              ),
             ),
-            
+
             SizedBox(height: 48.h),
-            
+
             // Görsel yükleme alanı
             _ImageUploadArea(ref: ref),
-            
+
             SizedBox(height: 48.h),
-            
+
             // Generate butonu
             Center(
               child: ElevatedButton(
@@ -117,27 +129,51 @@ class GenerationScreen extends ConsumerWidget {
             'assets/lottie/loading_animation.json', // Placeholder for loading animation
             width: 200.w,
             height: 200.h,
-          ),
-          
-          SizedBox(height: 32.h),
-          
-          Text(
-            'AI Video Oluşturuluyor...',
-            style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
+            errorBuilder: (context, error, stackTrace) {
+              // Fallback widget when Lottie fails to load
+              return Container(
+                width: 200.w,
+                height: 200.h,
+                decoration: BoxDecoration(
+                  color: AppColors.neonPurple.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: AppColors.neonPurple,
+                    width: 2.w,
+                  ),
                 ),
+                child: const Icon(
+                  Icons.hourglass_empty,
+                  color: Colors.white,
+                  size: 100,
+                ),
+              );
+            },
           ),
-          
+
+          SizedBox(height: 32.h),
+
+          ShaderMask(
+            shaderCallback: (bounds) {
+              return AppColors.vibrantGradient.createShader(
+                Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+              );
+            },
+            child: Text(
+              'AI Video Oluşturuluyor...',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
           SizedBox(height: 16.h),
-          
+
           Text(
             'Bu işlem birkaç dakika sürebilir',
-            style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16.sp,
-                ),
+            style: TextStyle(color: Colors.white70, fontSize: 16.sp),
           ),
         ],
       ),
@@ -158,9 +194,7 @@ class GenerationScreen extends ConsumerWidget {
     // Sonuç ekranına yönlendir
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const ResultScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const ResultScreen()),
     );
   }
 }
@@ -178,32 +212,25 @@ class _ImageUploadArea extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.black26,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: AppColors.neonPurple,
-          width: 2.w,
-        ),
+        border: Border.all(color: AppColors.neonPurple, width: 2.w),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.upload_outlined,
-            color: AppColors.neonPurple,
-            size: 60.sp,
-          ),
+          Icon(Icons.upload_outlined, color: AppColors.neonPurple, size: 60.sp),
           SizedBox(height: 16.h),
           Text(
             'Görsel Yükle',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.neonPurple,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: AppColors.neonPurple),
           ),
           SizedBox(height: 8.h),
           Text(
             'veya sürükleyip bırakın',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
           ),
           SizedBox(height: 16.h),
           Container(
@@ -211,10 +238,7 @@ class _ImageUploadArea extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AppColors.neonPurple.withOpacity(0.2),
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: AppColors.neonPurple,
-                width: 1.w,
-              ),
+              border: Border.all(color: AppColors.neonPurple, width: 1.w),
             ),
             child: Text(
               'Dosya Seç',
@@ -240,104 +264,113 @@ class ResultScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
-        ),
+        decoration: const BoxDecoration(color: AppColors.background), // Black background
         child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Geri butonu
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context); // Also pop the generation screen
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios_new,
-                    color: Colors.white,
-                    size: 20.sp,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Geri butonu
+                  IconButton(
+                    onPressed: () {
+                      // Navigate back to home screen using go_router
+                      context.go('/home');
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.white,
+                      size: 20.sp,
+                    ),
                   ),
-                ),
-                
-                SizedBox(height: 16.h),
-                
-                // Başlık
-                Text(
-                  'Video Oluşturuldu!',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+
+                  SizedBox(height: 16.h),
+
+                  // Başlık
+                  ShaderMask(
+                    shaderCallback: (bounds) {
+                      return AppColors.vibrantGradient.createShader(
+                        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                      );
+                    },
+                    child: Text(
+                      'Video Oluşturuldu!',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
-                ),
-                
-                SizedBox(height: 48.h),
-                
-                // Sonuç görseli
-                Container(
-                  width: double.infinity,
-                  height: 300.h,
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(
-                      color: AppColors.electricBlue,
-                      width: 2.w,
                     ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.movie_filter_outlined,
+
+                  SizedBox(height: 48.h),
+
+                  // Sonuç görseli
+                  Container(
+                    width: double.infinity,
+                    height: 300.h,
+                    decoration: BoxDecoration(
+                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(
                         color: AppColors.electricBlue,
-                        size: 80.sp,
+                        width: 2.w,
                       ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        'AI Tarafından Oluşturulan Video',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: AppColors.electricBlue,
-                            ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.movie_filter_outlined,
+                          color: AppColors.electricBlue,
+                          size: 80.sp,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'AI Tarafından Oluşturulan Video',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.electricBlue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 32.h),
+
+                  // Video bilgileri
+                  _VideoInfoCard(),
+
+                  SizedBox(height: 32.h),
+
+                  // Paylaş butonu
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Paylaş fonksiyonu
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.electricBlue,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 40.w,
+                          vertical: 18.h,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-                
-                SizedBox(height: 32.h),
-                
-                // Video bilgileri
-                _VideoInfoCard(),
-                
-                SizedBox(height: 32.h),
-                
-                // Paylaş butonu
-                ElevatedButton(
-                  onPressed: () {
-                    // Paylaş fonksiyonu
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.electricBlue,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 40.w,
-                      vertical: 18.h,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                      child: Text(
+                        'Share Video',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
-                  child: Text(
-                    'Share Video',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -355,10 +388,7 @@ class _VideoInfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black26,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: AppColors.neonPurple,
-          width: 1.w,
-        ),
+        border: Border.all(color: AppColors.neonPurple, width: 1.w),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,9 +396,9 @@ class _VideoInfoCard extends StatelessWidget {
           Text(
             'Video Detayları',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 16.h),
           _InfoRow(label: 'Kalite:', value: '4K'),
@@ -396,17 +426,17 @@ class _InfoRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white70,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
         ),
         const Spacer(),
         Text(
           value,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ai_vid_gen/core/services/onboarding_service.dart';
 import 'package:ai_vid_gen/core/theme/theme.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -39,8 +40,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.subtleGradient,
+        decoration: const BoxDecoration(
+          color: AppColors.background, // Black background
         ),
         child: SafeArea(
           child: Stack(
@@ -62,8 +63,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 top: 20.h,
                 right: 24.w,
                 child: TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Skip to paywall
+                    await OnboardingService.setOnboardingCompleted();
                     context.push('/paywall');
                   },
                   child: Text(
@@ -78,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               // Dots Indicator
               Positioned(
-                bottom: 80.h,
+                bottom: 120.h, // Moved higher to be above buttons
                 left: 0,
                 right: 0,
                 child: Row(
@@ -89,15 +91,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       width: _currentPage == index ? 24.w : 8.w,
                       height: 8.h,
-                      decoration: BoxDecoration(
-                        color: _currentPage == index
-                            ? AppColors.electricBlue
-                            : Colors.white30,
-                        borderRadius: BorderRadius.circular(4.r),
-                        shape: _currentPage == index
-                            ? BoxShape.rectangle
-                            : BoxShape.circle,
-                      ),
+                      decoration: _currentPage == index
+                            ? BoxDecoration(
+                                color: AppColors.electricBlue,
+                                borderRadius: BorderRadius.circular(4.r),
+                              )
+                            : BoxDecoration(
+                                color: Colors.white30,
+                                shape: BoxShape.circle,
+                              ),
                     ),
                   ),
                 ),
@@ -110,52 +112,59 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
                   child: _currentPage == _pages.length - 1
-                      ? ElevatedButton(
-                          key: const ValueKey('getStarted'),
-                          onPressed: () {
-                            context.push('/paywall');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.neonPurple,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 16.h,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
+                      ? Container(
+                          height: 65,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.vibrantGradient,
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
-                          child: Text(
-                            'Hadi Başlayalım',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
+                          child: ElevatedButton(
+                            key: const ValueKey('getStarted'),
+                            onPressed: () async {
+                              await OnboardingService.setOnboardingCompleted();
+                              context.push('/paywall');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: Text(
+                              'Get Started',
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         )
-                      : ElevatedButton(
-                          key: const ValueKey('next'),
-                          onPressed: () {
-                            _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.neonPurple,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 16.h,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
+                      : Container(
+                          height: 65,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.vibrantGradient,
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
-                          child: Text(
-                            'Next',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
+                          child: ElevatedButton(
+                            key: const ValueKey('next'),
+                            onPressed: () {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: Text(
+                              'Next',
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -186,7 +195,7 @@ class OnboardingPage extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 24.w,
-        vertical: 32.h,
+        vertical: 16.h,  // Reduced padding to move content higher
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -202,28 +211,44 @@ class OnboardingPage extends StatelessWidget {
                 width: 2.w,
               ),
             ),
-            child: Icon(
-              icon,
-              color: AppColors.electricBlue,
-              size: 60.sp,
+            child: Center(
+              child: Icon(
+                icon,
+                color: AppColors.electricBlue,
+                size: 60.sp,
+              ),
             ),
           ),
           SizedBox(height: 48.h),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-            textAlign: TextAlign.center,
+          ShaderMask(
+            shaderCallback: (bounds) {
+              return AppColors.vibrantGradient.createShader(
+                Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+              );
+            },
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+              textAlign: TextAlign.center,
+            ),
           ),
           SizedBox(height: 16.h),
-          Text(
-            description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.white70,
-                ),
-            textAlign: TextAlign.center,
+          ShaderMask(
+            shaderCallback: (bounds) {
+              return AppColors.vibrantGradient.createShader(
+                Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+              );
+            },
+            child: Text(
+              description,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.white70,
+                  ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

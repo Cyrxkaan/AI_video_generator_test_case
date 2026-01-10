@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:ai_vid_gen/core/providers/subscription_provider.dart';
 import 'package:ai_vid_gen/core/theme/theme.dart';
@@ -12,49 +13,57 @@ class PaywallScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedSubscription = ref.watch(subscriptionTypeProvider);
     final plans = subscriptionPlans;
+    
+    // Ensure we have valid plans available
+    if (plans.isEmpty) {
+      return Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            gradient: AppColors.vibrantGradient,
+          ),
+          child: const Center(
+            child: Text(
+              'Loading subscription plans...',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.vibrantGradient,
+        decoration: const BoxDecoration(
+          color: AppColors.background, // Black background
         ),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Üst görsel alanı
-                Container(
-                  height: 250.h,
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: Card(
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: LottieBuilder.asset(
-                        'assets/lottie/video_generation.json', // Placeholder for video generation animation
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
+
                 
                 SizedBox(height: 24.h),
                 
                 // Başlık
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: Text(
-                    'Unlock Premium Features',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  child: ShaderMask(
+                    shaderCallback: (bounds) {
+                      return AppColors.vibrantGradient.createShader(
+                        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                      );
+                    },
+                    child: Text(
+                      'Unlock Premium Features',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
                   ),
                 ),
                 
@@ -182,9 +191,19 @@ class PaywallScreen extends ConsumerWidget {
                       SizedBox(height: 24.h),
                       
                       // Seçilen plan kartı
-                      SubscriptionCard(
-                        plan: plans[selectedSubscription]!,
-                      ),
+                      plans[selectedSubscription] != null
+                          ? SubscriptionCard(
+                              plan: plans[selectedSubscription]!,
+                            )
+                          : Container(
+                              height: 200.h,
+                              child: const Center(
+                                child: Text(
+                                  'Plan not available',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -194,26 +213,31 @@ class PaywallScreen extends ConsumerWidget {
                 // Satın alma butonu
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Satın alma işlemi
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.background,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40.w,
-                        vertical: 18.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
+                  child: Container(
+                    height: 65,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.vibrantGradient,
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    child: Text(
-                      'Subscribe Now',
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.go('/home');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      child: Text(
+                        'Subscribe Now',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -287,21 +311,21 @@ class SubscriptionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        gradient: AppColors.secondaryGradient, // Neon gradient background
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: plan.isPopular 
               ? AppColors.electricBlue 
-              : Colors.white24,
+              : AppColors.neonPurple,
           width: 2.w,
         ),
         boxShadow: [
           BoxShadow(
             color: plan.isPopular 
-                ? AppColors.electricBlue.withOpacity(0.3)
-                : Colors.black26,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+                ? AppColors.electricBlue.withOpacity(0.5)
+                : AppColors.neonPurple.withOpacity(0.5),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
           ),
         ],
       ),

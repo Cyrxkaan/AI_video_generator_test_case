@@ -17,8 +17,7 @@ final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
 });
 
 // AsyncNotifier provider for fetching categories
-final categoriesProvider = StateNotifierProvider<CategoriesNotifier, AsyncValue<List<Category>>>
-    ((ref) {
+final categoriesProvider = StateNotifierProvider<CategoriesNotifier, AsyncValue<List<Category>>>((ref) {
   return CategoriesNotifier(ref.watch(categoryRepositoryProvider));
 });
 

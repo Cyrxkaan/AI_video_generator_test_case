@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/services/firebase_initializer.dart';
+import 'core/services/onboarding_service.dart';
 import 'core/theme/theme.dart';
 import 'core/navigation/app_router.dart';
 
@@ -11,12 +12,51 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String? initialRoute;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    bool isOnboardingCompleted = await OnboardingService.isOnboardingCompleted();
+    String route = isOnboardingCompleted ? '/home' : '/';
+
+    if (mounted) {
+      setState(() {
+        initialRoute = route;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Wait until we determine the initial route
+    if (initialRoute == null) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+            child: const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
@@ -26,6 +66,7 @@ class MyApp extends StatelessWidget {
           title: 'AI Video Generator',
           theme: AppTheme.theme,
           themeMode: ThemeMode.dark,
+          debugShowCheckedModeBanner: false, // Remove debug banner
           routerConfig: appRouter,
         );
       },

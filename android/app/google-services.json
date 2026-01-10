@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "769727078346",
+    "project_id": "ai-video-generator-test-case",
+    "storage_bucket": "ai-video-generator-test-case.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769727078346:android:443a4361c1deb4db507933",
+        "android_client_info": {
+          "package_name": "com.example.ai_vid_gen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP3tE0HdoTG4Z8fiWT4o7qNfx9Pz0ZKX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
